@@ -1,0 +1,158 @@
+"use client";
+
+import React from "react";
+import { useEffect, useState, useRef } from "react";
+import { Input } from "./ui/input";
+import { Button } from "./ui/button";
+import { SendHorizonalIcon } from "lucide-react";
+import { ScrollArea } from "./ui/scroll-area";
+
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+
+interface Message {
+  sender: string;
+  text: string;
+}
+
+const Chat = () => {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [message, setMessage] = useState("");
+  const [socket, setSocket] = useState<WebSocket | null>(null);
+
+  useEffect(() => {
+    const socket = new WebSocket("ws://66.42.67.220:8000/chat");
+
+    socket.onopen = () => {
+      // console.log("Connected to WebSocket server");
+    };
+
+    socket.onmessage = (event) => {
+      const newMessage = {
+        sender: "Bot",
+        text: event.data,
+      };
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
+    };
+
+    socket.onclose = () => {
+      // console.log("Disconnected from WebSocket server");
+    };
+
+    socket.onerror = (error) => {
+      // console.log("WebSocket error:", error);
+    };
+
+    //@ts-ignore
+    setSocket(socket);
+
+    return () => {
+      socket.close();
+    };
+  }, []);
+
+  // Make sure Scrolls to Bottom
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (ref.current) {
+      ref.current.scrollTo(0, ref.current.scrollHeight);
+      ref.current.scrollTop = ref.current.scrollHeight;
+    }
+  }, [messages]);
+
+  // Send Message back to WebSocket
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      sendMessage();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const sendMessage = () => {
+    if (socket && socket.readyState === WebSocket.OPEN) {
+      socket.send(message); // Send the message to the WebSocket server
+      const newMessage = {
+        sender: "You",
+        text: message,
+      };
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
+      setMessage(""); // Clear the input field after sending the message
+    } else {
+      console.log("WebSocket connection is not open");
+    }
+  };
+
+  return (
+    <>
+      <div className="container p-12 flex h-screen flex-col items-center justify-between px-1">
+        <h1 className="font-serif text-2xl font-medium ">Diagnosis Bot</h1>
+        <div className="mt-4 w-full max-w-xl h-screen flex flex-col justify-between ">
+          {/* Response Container */}
+          <div className="mx-auto mt-3 w-full max-w-xl ">
+            <ScrollArea
+              className="mb-2 rounded-md h-[calc(100vh-12rem)]"
+              ref={ref}
+            >
+              {messages.map((m) => (
+                <div key={m.text} className="my-6 whitespace-pre-wrap md:mr-12">
+                  {m.sender === "You" && (
+                    <div className="mb-6 flex gap-3 justify-end text-right ">
+                      {/* <Avatar>
+                        <AvatarImage src="" />
+                        <AvatarFallback className="text-sm">U</AvatarFallback>
+                      </Avatar> */}
+                      <div className=" ">
+                        {/* <p className="font-semibold">You</p> */}
+                        <div className=" text-sm text-zinc-500 bg-slate-200 rounded-xl px-5 py-3">
+                          {m.text}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  {m.sender === "Bot" && (
+                    <div className="mb-6 flex gap-3">
+                      <Avatar>
+                        <AvatarImage src="" />
+                        <AvatarFallback className="bg-emerald-500 text-white text-xs">
+                          AI
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="mt-1.5">
+                        <p className="font-semibold">Bot</p>
+                        <div className="mt-1.5 text-sm text-zinc-500 ">
+                          {m.text}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </ScrollArea>
+          </div>
+
+          <form className="relative" onSubmit={onSubmit}>
+            <Input
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder="Ask me anything"
+              className="pr-12 placeholder:italic placeholder:text-zinc-600"
+            />
+            <Button
+              size="icon"
+              type="submit"
+              variant="secondary"
+              className="absolute right-1 top-1 h-8 w-10"
+            >
+              <SendHorizonalIcon className="h-5 w-5" />
+            </Button>
+          </form>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default Chat;
