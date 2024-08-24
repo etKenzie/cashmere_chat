@@ -8,6 +8,8 @@ import { SendHorizonalIcon } from "lucide-react";
 import { ScrollArea } from "./ui/scroll-area";
 
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import Navbar from "./Navbar";
+import LoadingText from "./LoadingText";
 
 interface Message {
   sender: string;
@@ -31,6 +33,7 @@ const Chat = () => {
         sender: "Bot",
         text: event.data,
       };
+
       setMessages((prevMessages) => [...prevMessages, newMessage]);
     };
 
@@ -87,70 +90,73 @@ const Chat = () => {
 
   return (
     <>
-      <div className="container p-12 flex h-screen flex-col items-center justify-between px-1">
-        <h1 className="font-serif text-2xl font-medium ">Diagnosis Bot</h1>
-        <div className="mt-4 w-full max-w-xl h-screen flex flex-col justify-between ">
-          {/* Response Container */}
-          <div className="mx-auto mt-3 w-full max-w-xl ">
-            <ScrollArea
-              className="mb-2 rounded-md h-[calc(100vh-12rem)]"
-              ref={ref}
+      {/* <div className="container p-12 flex h-screen flex-col items-center justify-between px-1"> */}
+      {/* <h1 className="font-serif text-2xl font-medium ">Diagnosis Bot</h1> */}
+      {/* <div className="mt-4 w-full max-w-xl h-screen flex flex-col justify-between "> */}
+      {/* Response Container */}
+      <ScrollArea ref={ref} className="h-[calc(100vh-10rem)] ">
+        <div className="flex flex-col h-full w-full items-center">
+          {messages.map((m) => (
+            <div
+              key={m.text}
+              className="my-6 whitespace-pre-wrap mx-6 w-11/12 max-w-5xl"
             >
-              {messages.map((m) => (
-                <div key={m.text} className="my-6 whitespace-pre-wrap md:mr-12">
-                  {m.sender === "You" && (
-                    <div className="mb-6 flex gap-3 justify-end text-right ">
-                      {/* <Avatar>
+              {m.sender === "You" && (
+                <div className="mb-6 flex gap-3 justify-end text-right ">
+                  {/* <Avatar>
                         <AvatarImage src="" />
                         <AvatarFallback className="text-sm">U</AvatarFallback>
                       </Avatar> */}
-                      <div className=" ">
-                        {/* <p className="font-semibold">You</p> */}
-                        <div className=" text-sm text-zinc-500 bg-slate-200 rounded-xl px-5 py-3">
-                          {m.text}
-                        </div>
-                      </div>
+                  <div className=" ">
+                    {/* <p className="font-semibold">You</p> */}
+                    <div className=" text-sm text-zinc-500 bg-slate-200 rounded-xl px-5 py-3">
+                      {m.text}
                     </div>
-                  )}
-                  {m.sender === "Bot" && (
-                    <div className="mb-6 flex gap-3">
-                      <Avatar>
-                        <AvatarImage src="" />
-                        <AvatarFallback className="bg-emerald-500 text-white text-xs">
-                          AI
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="mt-1.5">
-                        <p className="font-semibold">Bot</p>
-                        <div className="mt-1.5 text-sm text-zinc-500 ">
-                          {m.text}
-                        </div>
-                      </div>
-                    </div>
-                  )}
+                  </div>
                 </div>
-              ))}
-            </ScrollArea>
-          </div>
-
-          <form className="relative" onSubmit={onSubmit}>
-            <Input
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              placeholder="Ask me anything"
-              className="pr-12 placeholder:italic placeholder:text-zinc-600"
-            />
-            <Button
-              size="icon"
-              type="submit"
-              variant="secondary"
-              className="absolute right-1 top-1 h-8 w-10"
-            >
-              <SendHorizonalIcon className="h-5 w-5" />
-            </Button>
-          </form>
+              )}
+              {m.sender === "Bot" && (
+                <div className="mb-6 flex gap-3">
+                  <Avatar>
+                    <AvatarImage src="" />
+                    <AvatarFallback className="bg-emerald-500 text-white text-xs">
+                      AI
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="mt-1.5">
+                    <p className="font-semibold">Bot</p>
+                    <div className="mt-1.5 text-sm text-zinc-500 ">
+                      {m.text}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
         </div>
+      </ScrollArea>
+      <div className="flex flex-col justify-center items-center gap-2">
+        <form className="relative max-w-4xl w-11/12" onSubmit={onSubmit}>
+          <Input
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder="Ask me anything"
+            className="pr-12 placeholder:italic placeholder:text-zinc-600 h-12"
+          />
+          <Button
+            size="icon"
+            type="submit"
+            variant="secondary"
+            className="absolute right-1 top-1 h-8 w-10"
+          >
+            <SendHorizonalIcon className="h-5 w-5" />
+          </Button>
+        </form>
+        <div className="text-xs font-light">Not to be used in emergencies</div>
       </div>
+
+      {/* </div> */}
+      {/* </div> */}
     </>
   );
 };
