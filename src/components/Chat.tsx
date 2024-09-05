@@ -90,8 +90,8 @@ const Chat = ({ className }: ChatProps) => {
   };
 
   return (
-    <div className={`${className}`}>
-      <ScrollArea ref={ref} className={`h-[calc(100vh-11rem)] `}>
+    <div className={`${className} flex flex-col`}>
+      <ScrollArea ref={ref} className={`flex-1 lg:h-[calc(100vh-11rem)]  `}>
         <div className="flex flex-col h-full w-full items-center">
           {messages.map((m) => (
             <div
@@ -150,7 +150,9 @@ const Chat = ({ className }: ChatProps) => {
             <SendHorizonalIcon className="h-5 w-5" />
           </Button>
         </form>
-        <div className="text-xs font-light">Not to be used in emergencies</div>
+        <div className="text-xs font-light mb-1">
+          Not to be used in emergencies
+        </div>
       </div>
 
       {/* </div> */}
