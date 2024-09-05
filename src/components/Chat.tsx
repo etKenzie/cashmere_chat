@@ -90,8 +90,8 @@ const Chat = ({ className }: ChatProps) => {
   };
 
   return (
-    <div className={`${className} flex flex-col`}>
-      <ScrollArea ref={ref} className={`flex-1 lg:h-[calc(100vh-11rem)]  `}>
+    <div className={`${className}`}>
+      <ScrollArea ref={ref} className={`h-[calc(100vh-11rem)]  `}>
         <div className="flex flex-col h-full w-full items-center">
           {messages.map((m) => (
             <div
