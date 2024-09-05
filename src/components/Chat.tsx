@@ -8,21 +8,22 @@ import { SendHorizonalIcon } from "lucide-react";
 import { ScrollArea } from "./ui/scroll-area";
 
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import Navbar from "./Navbar";
-import LoadingText from "./LoadingText";
 
 interface Message {
   sender: string;
   text: string;
 }
+interface ChatProps {
+  className?: string;
+}
 
-const Chat = () => {
+const Chat = ({ className }: ChatProps) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [message, setMessage] = useState("");
   const [socket, setSocket] = useState<WebSocket | null>(null);
 
   useEffect(() => {
-    const socket = new WebSocket("ws://66.42.67.220:8000/chat");
+    const socket = new WebSocket("wss://cmheath.com/chat");
 
     socket.onopen = () => {
       // console.log("Connected to WebSocket server");
@@ -89,17 +90,14 @@ const Chat = () => {
   };
 
   return (
-    <>
-      {/* <div className="container p-12 flex h-screen flex-col items-center justify-between px-1"> */}
-      {/* <h1 className="font-serif text-2xl font-medium ">Diagnosis Bot</h1> */}
-      {/* <div className="mt-4 w-full max-w-xl h-screen flex flex-col justify-between "> */}
-      {/* Response Container */}
-      <ScrollArea ref={ref} className="h-[calc(100vh-10rem)] ">
+    <div className={`${className}`}>
+      <ScrollArea ref={ref} className={`h-[calc(100vh-11rem)] `}>
         <div className="flex flex-col h-full w-full items-center">
           {messages.map((m) => (
             <div
               key={m.text}
-              className="my-6 whitespace-pre-wrap mx-6 w-11/12 max-w-5xl"
+              // className="my-6 whitespace-pre-wrap mx-6 w-11/12 max-w-5xl"
+              className="my-12 whitespace-pre-wrap mx-6 w-10/12 "
             >
               {m.sender === "You" && (
                 <div className="mb-6 flex gap-3 justify-end text-right ">
@@ -157,7 +155,7 @@ const Chat = () => {
 
       {/* </div> */}
       {/* </div> */}
-    </>
+    </div>
   );
 };
 
