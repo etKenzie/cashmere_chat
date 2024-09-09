@@ -72,7 +72,7 @@ const Chat = ({ className }: ChatProps) => {
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      if (isLoading) return;
+      if (isLoading || !message.trim()) return;
       sendMessage();
     } catch (err) {
       console.log(err);
@@ -81,10 +81,10 @@ const Chat = ({ className }: ChatProps) => {
 
   const sendMessage = () => {
     if (socket && socket.readyState === WebSocket.OPEN) {
-      socket.send(message); // Send the message to the WebSocket server
+      socket.send(message.trim()); // Trim the message before sending
       const newMessage = {
         sender: "You",
-        text: message,
+        text: message.trim(),
       };
       setMessages((prevMessages) => [...prevMessages, newMessage]);
       setMessage(""); // Clear the input field after sending the message
