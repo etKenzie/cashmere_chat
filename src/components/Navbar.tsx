@@ -12,11 +12,13 @@ import { NAV_LINKS } from "@/app/constants";
 
 const Navbar = () => {
   return (
-    <nav className="flex justify-between max-container padding-container relative z-30 py-5 px-8">
-      <Link href="/" className="self-center">
-        {/* {<Image src="/" alt="logo" width={74} height={29}></Image>} */}
-        <b>CASHMERE</b>
-        health
+    <nav className="flex justify-between max-container padding-container relative z-30 py-2 px-8">
+      <Link href="/" className="self-center flex items-center">
+        {<Image src="/Logo.svg" alt="logo" width={40} height={20}></Image>}
+        <div className="hidden lg:block">
+          <b>CASHMERE</b>
+          health
+        </div>
       </Link>
       <div className="flex gap-12 ">
         <ul className="hidden h-full gap-12 lg:flex">
